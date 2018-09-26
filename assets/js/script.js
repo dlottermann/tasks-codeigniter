@@ -36,7 +36,6 @@ $(document).ready(function() {
 			$('#delete').text("Ativar");
 			$('#delete').removeClass('btn-warning');
 			$('#delete').addClass('btn-success');
-
 		}
 
         e.preventDefault();
@@ -63,15 +62,15 @@ $(document).ready(function() {
 
 
 $(document).ready(function() {
-  //  $('.date').mask('00/00/0000');
+    $('.date').mask('00/00/0000');
 });
 
-/*
+
 $(document).ready(
     function() {
 
         //Adicionar registro
-        $('#modal_button').click(function() {
+        $('#modal_button_task').click(function() {
             $('#customerModal').modal('show'); //Abrir Modal
             $('#description').val(''); //Limpar os campos
             $('.modal-title').text("Adicionar Tarefa"); //Trocamos o label
@@ -79,40 +78,35 @@ $(document).ready(
         });
 
         //Atualizar
-        $('.update').on(
+        $('.updateTask').on(
             'click',
             function() {
                 var id = $(this).attr("id");
-                var action = "getstring";
+              
                 $.ajax({
-                    url: "task/getString",
+                    url: "tasks/getTask/"+id,
                     method: "GET",
-                    data: {
-                        id: id,
-                        action: action
-                    },
                     dataType: "json",
                     success: function(data) {
                         $('#customerModal').modal('show'); //Abrir Modal
                         $('.modal-title').text("Modificar Tarefa"); //Trocamos o label
                         $('#action').val('Atualizar'); //Trocamos o texto do botão
-                        $('form[name="frmCadastro"]').attr("action", "task/update");
+                        $('form[name="frmCadastro"]').attr("action", "tasks/setTask");
                         $('#id').val(id);
-                        $('#title').val(data.title);
+                        $('#title').val(data[0].title);
+						$('#description').val(data[0].description);
 
-                        dt = data.created.split("-");
-
+                        dt = data[0].created.split("-");
                         $('#created').val(dt[2] + "/" + dt[1] + "/" + dt[0]);
-                        $('#description').val(data.description);
+                       
                     }
                 });
             });
 
         //Excluir
-        $('.delete').on('click',
+        $('.deleteTask').on('click',
             function(e) {
                 var id = $(this).attr("id");
-                var action = "task/delete";
                 e.preventDefault();
 
                 //Confirmação
@@ -122,15 +116,11 @@ $(document).ready(
                     })
                     .one('click', '#delete', function(e) {
                         $.ajax({
-                            url: "task/delete",
+                            url: "tasks/deleteTask/"+id,
                             method: "GET",
-                            data: {
-                                id: id,
-                                action: action
-                            },
                             async: false,
                             success: function(data) {
-                                window.location.href = "/";
+                                window.location.href = "tasks";
                             }
                         });
 
@@ -144,9 +134,14 @@ $(document).ready(
             function(e) {
                 var id = $(this).attr("id");
                 var status = $(this).data("status");
-                var action = "task/dropString";
-                e.preventDefault();
+		
+				if(status == 0){
+					$('#deleteTask').text("Ativar");
+					$('#deleteTask').removeClass('btn-warning');
+					$('#deleteTask').addClass('btn-success');
+				}
 
+                e.preventDefault();
                 //Confirmação
                 $('#confirm_dois').modal({
                         backdrop: 'static',
@@ -154,16 +149,11 @@ $(document).ready(
                     })
                     .one('click', '#delete', function(e) {
                         $.ajax({
-                            url: "task/dropString",
+                            url: "tasks/inativaTask/"+id,
                             method: "GET",
-                            data: {
-                                id: id,
-                                status: status,
-                                action: action
-                            },
                             async: false,
                             success: function(data) {
-                                window.location.href = "/";
+                                window.location.href = "tasks";
                             }
                         });
 
@@ -171,4 +161,4 @@ $(document).ready(
 
             });
 	});
-	*/
+	

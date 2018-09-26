@@ -1,9 +1,8 @@
 
-	<div class="container">
+	<div class="container padding-20">
 		<div class="header clearfix">
 
-		<h3 class="text-muted">TASK-LIST</h3>
-        
+
 		</div>
 		
 		
@@ -26,29 +25,32 @@
 					</tr>
 				</thead>
 				<tbody>
-					<tr th:each="task : ${tasks}">
+				<?php foreach($tasks  as $task){ ?>
+					<tr>
 						<td>
-							<span th:text="${task.title}"></span>
+							<span><?php echo $task->title;?></span>
 						</td>
 						<td>
-							<span th:text="${task.description}"></span>
+							<span><?php echo $task->description;?></span>
 						</td>
 						<td>
-							<span th:text="${#dates.format(task.created, 'dd/MM/yyyy')}"></span>
+							<span><?php echo bancoData($task->created);?></span>
 						</td>
 						<td>
-							<span th:text="${task.category.description}"></span>
+							<span><?php echo $task->cat_description;?></span>
 						</td>
-						<td th:switch="${task.status}">
-							<a href="javascript:;" th:id="${task.id}" th:attr="data-status=${task.status}" class="btn btn-primary ative" th:case="'1'">Desativar</a>
-							<a href="javascript:;" th:id="${task.id}" th:attr="data-status=${task.status}" class="btn btn-success ative" th:case="'0'">Ativar</a>
+						<td>
+							<?php if($task->status == 1){?>
+								<a href="javascript:;" id="<?php echo $task->id;?>" data-status="<?php echo $task->status;?>" class="btn btn-primary ative" >Desativar</a>
+							<?php }else{ ?>
+								<a href="javascript:;" id="<?php echo $task->id;?>" data-status="<?php echo $task->status;?>" class="btn btn-success ative" >Ativar</a>
+							<?php } ?>
+							<a href="javascript:;" id="<?php echo $task->id;?>" class="btn btn-warning updateTask">Editar</a>							
 						
-							<a href="javascript:;" th:id="${task.id}" class="btn btn-warning update">Editar</a>
-							
-						
-							<a href="javascript:;" th:id="${task.id}" class="btn btn-danger delete">Excluir</a>
+							<a href="javascript:;" id="<?php echo $task->id;?>" class="btn btn-danger deleteTask">Excluir</a>
 						</td>
 					</tr>
+				<?php } ?>
 				</tbody>
 			</table>
 		</div>
@@ -60,7 +62,7 @@
 	<div id="customerModal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form method="POST" action="task/save" name="frmCadastro">
+				<form method="POST" action="<?php echo site_url('tasks/setTask'); ?> " name="frmCadastro">
 					<div class="modal-header">
 						<h4 class="modal-title">Adicionar Tarefa</h4>
 					</div>
@@ -79,8 +81,11 @@
 
 						<label>Categoria</label>
 
-						<select id="categoria_id" name="categoria_id" class="form-control">
-							<option th:each="cat : ${categories}" th:value="${cat.id}" th:text="${cat.description}"></option>
+						<select id="categoria_id" name="category_id" class="form-control" required>
+							<option value="">Selecione...</option>
+						<?php foreach($categorias  as $cat){ ?>
+							<option value="<?php echo $cat->id;?>" ><?php echo $cat->description;?></option>
+						<?php } ?>
 						</select>
 						<br />
 
@@ -124,11 +129,3 @@
 		</div>
 
 	</div>
-
-<script type="text/javascript" src="/webjars/jquery/3.1.1/jquery.min.js"></script>
-<script type="text/javascript" src="/webjars/bootstrap/3.3.7-1/js/bootstrap.min.js"></script>
-	
-<script type="text/javascript" src="jquery.mask.min.js"></script>
-</body>
-
-</html>
